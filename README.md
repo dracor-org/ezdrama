@@ -31,13 +31,13 @@ NB 2: the $ will also put into the current stage tag all next lines before any n
 
 ```
 $ Come John.
-He unsheats a sword.
+He unsheathes a sword.
 @John:
 ```
 
 will create a stage direction
 ```
-<stage>Come John. He unsheats a sword.</stage>
+<stage>Come John. He unsheathes a sword.</stage>
 ```
 
 **If you need a short inside-sp stage, use `%`**:

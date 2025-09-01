@@ -275,9 +275,8 @@ class Parser():
                 while ancestor.parent and int(ancestor.get('level', 0)) >= computed_level:
                     ancestor = ancestor.parent
                 ancestor.append(new_div)
-
-    self.current_lowest_div = new_div
-    self.current_lowest_tag = new_div
+            self.current_lowest_div = new_div
+            self.current_lowest_tag = new_div
 
     
     ## Aux technical processing functions

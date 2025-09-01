@@ -310,6 +310,11 @@ class Parser():
         if body_tag and 'level' in body_tag.attrs:
             del body_tag['level']
 
+        for sp in self.tree_root.find_all('sp'):
+            self.__post_process_sp(sp)
+            if 'who' in sp.attrs:
+                set_of_char_pairs.add((sp['who'], sp.speaker.text.strip('.,:!; ')))
+
         for div in self.tree_root.find_all('div'):
             level_val = div.get('level')
             try:

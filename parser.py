@@ -246,17 +246,39 @@ class Parser():
             new_div = Tag(name='div')
             head = Tag(name='head')
             head.append(rest_of_line.strip('#'))
-            new_div['level'] = self.__get_div_level(rest_of_line)
+
+            # Compute an integer level safely
+            try:
+                computed_level = int(self.__get_div_level(rest_of_line))
+            except Exception:
+                computed_level = 1
+            new_div['level'] = computed_level
             new_div.append(head)
-            if new_div['level'] > self.current_lowest_div['level']:
+
+            # Read current level defensively
+            try:
+                current_level = int(self.current_lowest_div.get('level', 0))
+            except Exception:
+                current_level = 0
+                # restore invariant if needed
+                self.current_lowest_div['level'] = current_level
+
+            if computed_level > current_level:
+                # going deeper
                 self.current_lowest_div.append(new_div)
-            elif new_div['level'] == self.current_lowest_div['level']:
+            elif computed_level == current_level:
+                # same level: add alongside current
                 self.current_lowest_div.parent.append(new_div)
             else:
-                self.current_lowest_div.parent.parent.append(new_div)
-            self.current_lowest_div = new_div
-            self.current_lowest_tag = new_div
-    
+                # shallower: walk up until an ancestor with smaller level
+                ancestor = self.current_lowest_div
+                while ancestor.parent and int(ancestor.get('level', 0)) >= computed_level:
+                    ancestor = ancestor.parent
+                ancestor.append(new_div)
+
+    self.current_lowest_div = new_div
+    self.current_lowest_tag = new_div
+
     
     ## Aux technical processing functions
         
@@ -285,22 +307,26 @@ class Parser():
         
         self.__add_cast_items()
         
-        del self.tree_root.find('body')['level']
-        
-        for sp in self.tree_root.find_all('sp'):
-            self.__post_process_sp(sp)
-            if 'who' in sp.attrs:
-                set_of_char_pairs.add((sp['who'], sp.speaker.text.strip('.,:!; '))) 
+        body_tag = self.tree_root.find('body')
+        if body_tag and 'level' in body_tag.attrs:
+            del body_tag['level']
+
         for div in self.tree_root.find_all('div'):
-            if div['level'] == 0:
+            level_val = div.get('level')
+            try:
+                level = int(level_val) if level_val is not None else None
+            except Exception:
+                level = None
+
+            if level == 0:
                 div.attrs = {}
-            elif div['level'] == 1:
+            elif level == 1:
                 div.attrs = {}
                 div['type'] = 'act'
-            elif div['level'] == 2:
+            elif level == 2:
                 div.attrs = {}
                 div['type'] = 'scene'
-            elif div['level'] == 3:
+            elif level == 3:
                 div.attrs = {}
                 div['type'] = 'subscene'
         self.__add_particdesc_to_header(set_of_char_pairs)

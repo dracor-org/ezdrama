@@ -188,7 +188,7 @@ And then you automatically get a TEI/XML like this:
   <teiHeader>
     <fileDesc>
       <titleStmt>
-        <title type="main">Ham</title>
+        <title>Ham</title>
         <title type="sub">A tragedy</title>
         <author>William S</author>
       </titleStmt>
@@ -196,20 +196,22 @@ And then you automatically get a TEI/XML like this:
         <publisher xml:id="dracor">DraCor</publisher>
         <idno type="URL">https://dracor.org</idno>
         <availability>
-          <licence>
-            <ab>CC0 1.0</ab>
-            <ref target="https://creativecommons.org/publicdomain/zero/1.0/">
-              Licence</ref>
+          <licence target="https://creativecommons.org/publicdomain/zero/1.0/">
+            CC0 1.0
           </licence>
         </availability>
       </publicationStmt>
       <sourceDesc>
         <bibl type="digitalSource">
-          <name>ENTER SOURCE NAME HERE</name>
-          <idno type="URL">ENTER SOURCE URL HERE</idno>
+          <ref target="ENTER SOURCE URL HERE">
+            ENTER SOURCE NAME HERE
+          </ref>
           <availability status="free">
             <p>In the public domain.</p>
           </availability>
+        </bibl>
+        <bibl type="originalSource">
+          ENTER BIBLIOGRAPHICAL REFERENCE TO ORIGINAL SOURCE
         </bibl>
       </sourceDesc>
     </fileDesc>
